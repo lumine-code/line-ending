@@ -1,5 +1,5 @@
 {
-  "name": "line-ending-selector",
+  "name": "line-ending",
   "author": "lumine-code",
   "version": "1.0.0",
   "description": "Show and change the line ending used by the current editor.",
@@ -10,9 +10,9 @@
     "newline",
     "cr"
   ],
-  "repository": "https://github.com/lumine-code/line-ending-selector",
+  "repository": "https://github.com/lumine-code/line-ending",
   "bugs": {
-    "url": "https://github.com/lumine-code/line-ending-selector/issues"
+    "url": "https://github.com/lumine-code/line-ending/issues"
   },
   "license": "MIT",
   "main": "./lib/main",
