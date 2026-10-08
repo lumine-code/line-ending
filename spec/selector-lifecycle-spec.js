@@ -21,6 +21,45 @@ describe("line-ending pending picker ownership", () => {
 
   afterEach(() => selector.dispose());
 
+  it("consumes an obsolete rejected lookup handed to an already disposed selector", async () => {
+    let consumed = false;
+    // A rejection-capable thenable records whether anyone consumes the input
+    // without letting the intentionally broken baseline report a global error.
+    const lookup = {
+      then(_resolve, reject) {
+        consumed = true;
+        reject(new Error("retired lookup"));
+      },
+    };
+    selector.dispose();
+    const version = selector.showVersion;
+    const show = spyOn(selector.lineEndingListHost, "show").and.callThrough();
+    await selector.show(editor, lookup);
+    await Promise.resolve();
+
+    expect(consumed).toBe(true);
+    expect(selector.editor).toBeNull();
+    expect(selector.showVersion).toBe(version);
+    expect(show).not.toHaveBeenCalled();
+  });
+
+  it("preserves a failed lookup belonging to the live request", async () => {
+    const error = new Error("current lookup failed");
+    const show = spyOn(selector.lineEndingListHost, "show").and.callThrough();
+    const lookup = {
+      then(_resolve, reject) {
+        reject(error);
+      },
+    };
+    const result = await selector.show(editor, lookup).then(
+      () => null,
+      (failure) => failure,
+    );
+
+    expect(result).toBe(error);
+    expect(show).not.toHaveBeenCalled();
+  });
+
   it("settles a pending model update after disposal without calling its destroyed host", async () => {
     const update = deferred();
     spyOn(selector.lineEndingList, "update").and.returnValue(update.promise);
