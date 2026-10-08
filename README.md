@@ -2,6 +2,8 @@
 
 Show and change the line ending used by the current editor.
 
+Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/line-ending-selector`).
+
 ## Features
 
 - **Line ending indicator**: displays the current line ending (`CRLF`, `LF`, or `Mixed`) in the status bar.
