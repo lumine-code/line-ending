@@ -19,7 +19,7 @@ To install `line-ending` search for it in the Install pane of the Lumine setting
 
 ## Commands
 
-Commands available in `lumine-text-editor`:
+The picker command is available in `lumine-workspace`; conversion commands are available in non-mini `lumine-text-editor` elements:
 
 - `line-ending:show`: open the line ending picker,
 - `line-ending:convert-to-lf`: convert the file to `LF` line endings,
