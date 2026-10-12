@@ -1,3 +1,4 @@
+const windowService = require("./helpers/window-service");
 const { Emitter, TextEditor } = require("lumine");
 const path = require("path");
 
@@ -24,11 +25,13 @@ describe("line ending selector", () => {
   it("destroys its tile when the status-bar service edge disappears", () => {
     const tile = { destroy: jasmine.createSpy("destroy") };
     const mainModule = lumine.packages.getActivePackage("line-ending").mainModule;
-    const registration = mainModule.consumeStatusBar({
-      addRightTile() {
-        return tile;
-      },
-    });
+    const registration = mainModule.consumeStatusBar(
+      windowService({
+        addRightTile() {
+          return tile;
+        },
+      }),
+    );
 
     registration.dispose();
     expect(tile.destroy).toHaveBeenCalled();
@@ -79,12 +82,24 @@ describe("line ending selector", () => {
       const cellText = editor.getText();
       const fileEditor = lumine.workspace.buildTextEditor();
       fileEditor.setLineEnding = jasmine.createSpy("setLineEnding");
-      spyOn(lumine.workspace, "getActiveFileTextEditor").and.returnValue(fileEditor);
+      const pane = lumine.workspace.paneForItem(editor);
+      const root = document.createElement("div");
+      const richItem = {
+        canCopy: () => false,
+        element: root,
+        getFileTextEditor: () => fileEditor,
+        getActiveTextEditor: () => editor,
+      };
+      pane.removeItem(editor);
+      root.append(editorElement);
+      pane.activateItem(richItem);
 
       lumine.commands.dispatch(editorElement, "line-ending:convert-to-crlf");
 
       expect(fileEditor.setLineEnding).toHaveBeenCalledWith("\r\n");
       expect(editor.getText()).toBe(cellText);
+      pane.removeItem(richItem);
+      pane.activateItem(editor);
       fileEditor.destroy();
     });
 

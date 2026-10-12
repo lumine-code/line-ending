@@ -1,3 +1,4 @@
+const windowService = require("./helpers/window-service");
 const { Emitter } = require("lumine");
 describe("Line Ending status request ownership", () => {
   let main, editor, bar, emitter, release, reject, reads, leases;
@@ -69,7 +70,7 @@ describe("Line Ending status request ownership", () => {
       main.deactivate();
       return late;
     });
-    leases.push(main.consumeStatusBar(bar));
+    leases.push(main.consumeStatusBar(windowService(bar)));
     expect(late).toBeDefined();
     expect(tiles().length).toBe(0);
     expect(lumine.workspace.getFooterPanels().some((panel) => panel.getItem() === bar)).toBe(true);
