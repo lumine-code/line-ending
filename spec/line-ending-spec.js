@@ -98,7 +98,7 @@ describe("line ending selector", () => {
       cellEditor.setText(cellText);
       fileEditor.setLineEnding = jasmine.createSpy("setLineEnding");
       host.getTitle = () => "Rich file";
-      host.isSingleton = () => true;
+      host.canCopy = () => false;
       host.getFileTextEditor = () => fileEditor;
       host.getActiveEmbeddedTextEditor = () => null;
       host.onDidChangeActiveTextEditors = () => ({ dispose() {} });
