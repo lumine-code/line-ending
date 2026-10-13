@@ -27,7 +27,9 @@
       "submenu": [
         {
           "label": "Select Line Ending…",
-          "command": "line-ending:show"
+          "command": "line-ending:show",
+          "group": "properties",
+          "order": 20
         }
       ]
     }
