@@ -1,0 +1,16 @@
+{
+  "title": "line-ending",
+  "description": "Choose the line ending format.",
+  "recordedOn": "2026-10-13",
+  "sourceRevision": "6d87e348b91fd41ded7c0fc801ca63f43d96edb4",
+  "mode": "normal",
+  "fontSettings": "default",
+  "images": [
+    {
+      "file": "demo.png",
+      "label": "Choose the line ending format.",
+      "width": 1100,
+      "height": 720
+    }
+  ]
+}

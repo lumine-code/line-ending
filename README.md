@@ -13,6 +13,8 @@ Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/l
 - **Default line ending**: choose the line ending applied to newly created files.
 - **Format-aware files**: richer file views can report and convert the serialized file's line endings instead of an embedded editor's buffer.
 
+![Choose the line ending format.](.github/demo.png)
+
 ## Installation
 
 To install `line-ending` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/line-ending`.
