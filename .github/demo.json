@@ -2,9 +2,10 @@
   "title": "line-ending",
   "description": "Choose the line ending format.",
   "recordedOn": "2026-10-13",
-  "sourceRevision": "6d87e348b91fd41ded7c0fc801ca63f43d96edb4",
+  "sourceRevision": "5613c883cd2c5fc92f95d12b38826ac5b6a9f874",
   "mode": "normal",
   "fontSettings": "default",
+  "themeSourceRevision": "6564a9e21899b5541e9c8f8006f9be6d6d72e6ad",
   "images": [
     {
       "file": "demo.png",
