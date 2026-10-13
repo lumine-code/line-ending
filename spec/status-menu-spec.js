@@ -68,15 +68,49 @@ describe("line-ending status action menu", () => {
     host.append(lumine.views.getView(cell));
     extra.getEditorContainer().getActivePane().activateItem(host, { activatePane: true });
     const remoteTile = extra.getElement().querySelector(".line-ending-tile");
+    const keys = lumine.keymaps.add("line-ending-file-scope-spec", {
+      'lumine-text-editor[data-menu-owner="file"]': { "ctrl-alt-1": "line-ending:convert-to-crlf" },
+      'lumine-text-editor[data-menu-owner="cell"]': { "ctrl-alt-2": "line-ending:convert-to-crlf" },
+    });
+    file.getElement().setAttribute("data-menu-owner", "file");
+    cell.getElement().setAttribute("data-menu-owner", "cell");
     try {
+      const menu = lumine.contextMenu.templateForElement(remoteTile);
+      const conversion = menu.find((item) => item.command === "line-ending:convert-to-crlf");
+      expect(conversion.keyBindingLabel).toBe(process.platform === "darwin" ? "⌃⌥1" : "Ctrl+Alt+1");
+      const popup = lumine.contextMenu.show(remoteTile, menu);
+      try {
+        expect(
+          popup.rootList.items.find((item) => item.template.command === conversion.command)
+            .keystrokeElement.textContent,
+        ).toBe(conversion.keyBindingLabel);
+      } finally {
+        popup.close();
+      }
       await lumine.commands.dispatch(remoteTile, "line-ending:convert-to-crlf");
       expect(file.setLineEnding).toHaveBeenCalledOnceWith("\r\n");
       expect(cell.getText()).toBe("Cell\nsource\n");
       expect(editor.getText()).toBe("first\nsecond\n");
     } finally {
+      keys.dispose();
       await extra.getEditorContainer().getActivePane().destroyItem(host, true);
       cell.destroy();
       file.destroy();
+    }
+  });
+  it("does not advertise a file shortcut when no file editor exists", async () => {
+    const element = tile();
+    const keys = lumine.keymaps.add("line-ending-empty-scope-spec", {
+      "lumine-workspace": { "ctrl-alt-1": "line-ending:show" },
+    });
+    try {
+      await lumine.workspace.open({
+        getTitle: () => "Preview",
+        element: document.createElement("div"),
+      });
+      expect(lumine.contextMenu.templateForElement(element)[0].keyBindingLabel).toBe("");
+    } finally {
+      keys.dispose();
     }
   });
 });
