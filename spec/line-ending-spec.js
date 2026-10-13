@@ -1,18 +1,21 @@
 const windowService = require("./helpers/window-service");
 const { Emitter, TextEditor } = require("lumine");
 const path = require("path");
+const { createRequire } = require("node:module");
 
 describe("line ending selector", () => {
   let helpers, lineEndingTile, Selector;
 
   beforeEach(async () => {
     jasmine.useRealClock();
+    jasmine.attachToDOM(lumine.workspace.getElement());
 
     await lumine.packages.activatePackage("status-bar");
 
-    await lumine.packages.activatePackage("line-ending");
-    helpers = require("../lib/helpers");
-    ({ Selector } = require("../lib/selector"));
+    const pack = await lumine.packages.activatePackage("line-ending");
+    const currentRequire = createRequire(path.join(pack.path, "package.json"));
+    helpers = currentRequire("./lib/helpers");
+    ({ Selector } = currentRequire("./lib/selector"));
 
     await timeoutPromise(1);
 
@@ -149,9 +152,14 @@ describe("line ending selector", () => {
 
     describe('When "line-ending:show" is run', () => {
       async function showSelector() {
-        lumine.commands.dispatch(lumine.views.getView(lumine.workspace), "line-ending:show");
-        await conditionPromise(() => lumine.workspace.getModalPanels().length > 0);
-        const view = lumine.workspace.getModalPanels()[0].getItem();
+        await lumine.commands.dispatch(lumine.views.getView(lumine.workspace), "line-ending:show");
+        await conditionPromise(() =>
+          lumine.workspace.getModalPanels().some((panel) => panel.isVisible()),
+        );
+        const view = lumine.workspace
+          .getModalPanels()
+          .find((panel) => panel.isVisible())
+          .getItem();
         await conditionPromise(() => view.getElement().querySelector("li"));
         return view;
       }
@@ -201,10 +209,12 @@ describe("line ending selector", () => {
         const fileEditor = lumine.workspace.buildTextEditor();
         fileEditor.getLineEndings = () => Promise.resolve(new Set(["\n"]));
         fileEditor.setLineEnding = jasmine.createSpy("setLineEnding");
-        await lumine.workspace.open(fileEditor);
+        await lumine.workspace.open(fileEditor, { pending: false });
+        expect(lumine.workspace.getActiveFileTextEditor()).toBe(fileEditor);
 
         const view = await showSelector();
-        const otherEditor = await lumine.workspace.open("");
+        const otherEditor = await lumine.workspace.open("", { pending: false });
+        expect(fileEditor.isDestroyed()).toBe(false);
         otherEditor.setLineEnding = jasmine.createSpy("otherSetLineEnding");
         await view.selectIndex(rowNames(view).indexOf("CRLF"));
         await view.confirmSelection();

@@ -1,0 +1,48 @@
+{
+  "menu": [
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "Line Ending",
+          "submenu": [
+            {
+              "label": "Select Line Ending…",
+              "command": "line-ending:show"
+            },
+            {
+              "label": "Convert to LF",
+              "command": "line-ending:convert-to-lf"
+            },
+            {
+              "label": "Convert to CRLF",
+              "command": "line-ending:convert-to-crlf"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "context-menu": {
+    ".line-ending-tile": [
+      {
+        "type": "separator"
+      },
+      {
+        "label": "Select Line Ending…",
+        "command": "line-ending:show"
+      },
+      {
+        "label": "Convert to LF",
+        "command": "line-ending:convert-to-lf"
+      },
+      {
+        "label": "Convert to CRLF",
+        "command": "line-ending:convert-to-crlf"
+      },
+      {
+        "type": "separator"
+      }
+    ]
+  }
+}

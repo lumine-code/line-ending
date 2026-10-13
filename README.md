@@ -19,11 +19,13 @@ To install `line-ending` search for it in the Install pane of the Lumine setting
 
 ## Commands
 
-The picker command is available in `lumine-workspace`; conversion commands are available in non-mini `lumine-text-editor` elements:
+Commands available in `lumine-workspace`:
 
 - `line-ending:show`: open the line ending picker,
 - `line-ending:convert-to-lf`: convert the file to `LF` line endings,
 - `line-ending:convert-to-crlf`: convert the file to `CRLF` line endings.
+
+Click the line ending tile to open the picker, or right-click it to open the picker or convert the file directly to LF or CRLF.
 
 ## Services
 
