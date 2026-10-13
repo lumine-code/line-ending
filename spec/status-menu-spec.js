@@ -20,11 +20,6 @@ describe("line-ending status action menu", () => {
     expect(element.hasAttribute("data-context-menu-boundary")).toBe(true);
     const commands = lumine.contextMenu.templateForElement(element).map((item) => item.command);
     expect(commands).toContain("line-ending:show");
-    expect(
-      lumine.contextMenu
-        .templateForElement(element)
-        .find((item) => item.command === "line-ending:show").mouseBindingLabel,
-    ).toBe("LMB");
     const [tooltip] = lumine.tooltips.findTooltips(element);
     expect(tooltip.getTitle()).toContain("Click to");
     expect(tooltip.getTitle()).not.toContain("tooltip-composite");

@@ -30,8 +30,7 @@
       },
       {
         "label": "Select Line Ending…",
-        "command": "line-ending:show",
-        "mouseBindingLabel": "LMB"
+        "command": "line-ending:show"
       },
       {
         "label": "Convert to LF",
