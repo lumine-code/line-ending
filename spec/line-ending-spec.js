@@ -255,7 +255,7 @@ describe("line ending selector", () => {
               expect(lineEndingTile.element.textContent).toBe("CRLF");
               expect(editor.getBuffer().getPreferredLineEnding()).toBe("\r\n");
               expect(getTooltipText(lineEndingTile.element)).toBe(
-                "File uses CRLF (Windows) line endings",
+                "File uses CRLF (Windows) line endings. Click to select line endings.",
               );
               done();
             });
@@ -273,7 +273,7 @@ describe("line ending selector", () => {
               expect(lineEndingTile.element.textContent).toBe("LF");
               expect(editor.getBuffer().getPreferredLineEnding()).toBe("\n");
               expect(getTooltipText(lineEndingTile.element)).toBe(
-                "File uses LF (Unix) line endings",
+                "File uses LF (Unix) line endings. Click to select line endings.",
               );
 
               done();
@@ -486,7 +486,9 @@ describe("line ending selector", () => {
         });
 
         expect(lineEndingTile.element.textContent).toBe("LF");
-        expect(getTooltipText(lineEndingTile.element)).toBe("File uses LF (Unix) line endings");
+        expect(getTooltipText(lineEndingTile.element)).toBe(
+          "File uses LF (Unix) line endings. Click to select line endings.",
+        );
 
         await new Promise((done) => {
           editor.setTextInBufferRange(
@@ -511,7 +513,9 @@ describe("line ending selector", () => {
 
         expect(tileUpdateCount).toBe(1);
         expect(lineEndingTile.element.textContent).toBe("Mixed");
-        expect(getTooltipText(lineEndingTile.element)).toBe("File uses mixed line endings");
+        expect(getTooltipText(lineEndingTile.element)).toBe(
+          "File uses mixed line endings. Click to select line endings.",
+        );
 
         await new Promise((done) => {
           lumine.commands.dispatch(editor.getElement(), "line-ending:convert-to-crlf");
@@ -521,7 +525,7 @@ describe("line ending selector", () => {
         expect(tileUpdateCount).toBe(2);
         expect(lineEndingTile.element.textContent).toBe("CRLF");
         expect(getTooltipText(lineEndingTile.element)).toBe(
-          "File uses CRLF (Windows) line endings",
+          "File uses CRLF (Windows) line endings. Click to select line endings.",
         );
 
         await new Promise((done) => {
