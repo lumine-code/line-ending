@@ -21,6 +21,15 @@
           ]
         }
       ]
+    },
+    {
+      "label": "File",
+      "submenu": [
+        {
+          "label": "Select Line Ending…",
+          "command": "line-ending:show"
+        }
+      ]
     }
   ],
   "context-menu": {
