@@ -20,12 +20,18 @@ describe("line ending selector", () => {
     await timeoutPromise(1);
 
     const statusBar = lumine.workspace.getFooterPanels()[0].getItem();
+    expect(statusBar.getRightTiles()).toEqual([]);
+    // Exercise the real first-use boundary before testing the tile's updates.
+    const firstEditor = await lumine.workspace.open();
     lineEndingTile = statusBar.getRightTiles()[0].getItem();
+    lumine.workspace.paneForItem(firstEditor).removeItem(firstEditor);
+    firstEditor.destroy();
     expect(lineEndingTile.element.className).toMatch(/line-ending-tile/);
     expect(lineEndingTile.element.textContent).toBe("");
   });
 
-  it("destroys its tile when the status-bar service edge disappears", () => {
+  it("destroys its tile when the status-bar service edge disappears", async () => {
+    await lumine.workspace.open();
     const tile = { destroy: jasmine.createSpy("destroy") };
     const mainModule = lumine.packages.getActivePackage("line-ending").mainModule;
     const registration = mainModule.consumeStatusBar(
