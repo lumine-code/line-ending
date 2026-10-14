@@ -1,17 +1,61 @@
 {
   "title": "line-ending",
   "description": "Choose the line ending format.",
-  "recordedOn": "2026-10-13",
-  "sourceRevision": "5613c883cd2c5fc92f95d12b38826ac5b6a9f874",
+  "recordedOn": "2026-10-14",
+  "sourceRevision": "18b0c199d7845a43f651712634a61d1baa7b4eac",
+  "themeSourceRevision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
   "mode": "normal",
   "fontSettings": "default",
-  "themeSourceRevision": "6564a9e21899b5541e9c8f8006f9be6d6d72e6ad",
+  "scenario": "demo.js",
+  "recipeHash": "f2d8b83e9d28031dc178ccd341d119a8a9b003d8f5df68d3a74cd72e1c8076c0",
+  "environment": {
+    "platform": "win32",
+    "arch": "x64",
+    "electron": "44.7.0",
+    "chrome": "152.0.7977.130",
+    "devicePixelRatio": 1,
+    "locale": "en-GB",
+    "fontFamily": "Fira Code, Menlo, DejaVu Sans Mono, Consolas, monospace",
+    "fontSize": 14,
+    "themes": ["one-day-syntax", "one-day-ui"]
+  },
+  "viewport": { "width": 1100, "height": 720 },
+  "cornerRadius": 10,
+  "sources": {
+    "editor": {
+      "revision": "385bd1b3ac2db600f1c7e077474d9da4d6deebc4",
+      "dirty": true,
+      "workingTreeHash": "0fa935626a1db13861a0b78ef5c3d890e0a6bff80b25da2fac6e9889910defe0"
+    },
+    "package": {
+      "revision": "18b0c199d7845a43f651712634a61d1baa7b4eac",
+      "dirty": true,
+      "workingTreeHash": "fe7928bb3d54bb66a0fa2b24e4b87de980109774ef3c49a14ba52cc2e31ac4fd"
+    },
+    "line-ending": {
+      "revision": "18b0c199d7845a43f651712634a61d1baa7b4eac",
+      "dirty": true,
+      "workingTreeHash": "fe7928bb3d54bb66a0fa2b24e4b87de980109774ef3c49a14ba52cc2e31ac4fd"
+    },
+    "one-theme": {
+      "revision": "14a69683b0e3238e2bc128fbfae3866c1e4ee9c6",
+      "dirty": true,
+      "workingTreeHash": "50ec2f83a6347dd8113870992ec4eb2be4014f3d9e12213c2f51b543f1eca793"
+    }
+  },
+  "fixtures": [
+    {
+      "file": "signal.js",
+      "sha256": "2a36953daadd1ae53070d0ff7ceab4624395fdb957104aa6e8ec92d785cadf1d"
+    }
+  ],
   "images": [
     {
       "file": "demo.png",
       "label": "Choose the line ending format.",
       "width": 1100,
-      "height": 720
+      "height": 720,
+      "sha256": "51527e5382cb3c50322d1df1b154fae0cfccdcc97d0b4350f31bfb29c4b3c22b"
     }
   ]
 }
