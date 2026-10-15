@@ -9,6 +9,7 @@ describe("line-ending status action menu", () => {
     editor = await lumine.workspace.open();
     editor.setText("first\nsecond\n");
     await conditionPromise(() => tile() && tile().style.display !== "none");
+    editor.getElement().focus();
   });
   afterEach(async () => {
     await lumine.workspace.discardEditorWindows();
@@ -75,9 +76,10 @@ describe("line-ending status action menu", () => {
     file.getElement().setAttribute("data-menu-owner", "file");
     cell.getElement().setAttribute("data-menu-owner", "cell");
     try {
+      cell.getElement().focus();
       const menu = lumine.contextMenu.templateForElement(remoteTile);
       const conversion = menu.find((item) => item.command === "line-ending:convert-to-crlf");
-      expect(conversion.keyBindingLabel).toBe(process.platform === "darwin" ? "⌃⌥1" : "Ctrl+Alt+1");
+      expect(conversion.keyBindingLabel).toBe(process.platform === "darwin" ? "⌃⌥2" : "Ctrl+Alt+2");
       const popup = lumine.contextMenu.show(remoteTile, menu);
       try {
         expect(
@@ -98,17 +100,22 @@ describe("line-ending status action menu", () => {
       file.destroy();
     }
   });
-  it("does not advertise a file shortcut when no file editor exists", async () => {
+  it("shows a matching workspace shortcut independently of whether a file editor exists", async () => {
     const element = tile();
     const keys = lumine.keymaps.add("line-ending-empty-scope-spec", {
       "lumine-workspace": { "ctrl-alt-1": "line-ending:show" },
     });
     try {
+      const preview = document.createElement("div");
+      preview.tabIndex = -1;
       await lumine.workspace.open({
         getTitle: () => "Preview",
-        element: document.createElement("div"),
+        element: preview,
       });
-      expect(lumine.contextMenu.templateForElement(element)[0].keyBindingLabel).toBe("");
+      preview.focus();
+      expect(lumine.contextMenu.templateForElement(element)[0].keyBindingLabel).toBe(
+        process.platform === "darwin" ? "⌃⌥1" : "Ctrl+Alt+1",
+      );
     } finally {
       keys.dispose();
     }
