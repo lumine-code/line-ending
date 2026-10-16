@@ -23,6 +23,8 @@ To install `line-ending` search for it in the Install pane of the Lumine setting
 
 Commands available in `lumine-workspace`:
 
+Commands require a live writable file editor in the invoking window. The picker keeps its captured file and rechecks its writable state before applying a conversion.
+
 - `line-ending:show`: open the line ending picker,
 - `line-ending:convert-to-lf`: convert the file to `LF` line endings,
 - `line-ending:convert-to-crlf`: convert the file to `CRLF` line endings.
