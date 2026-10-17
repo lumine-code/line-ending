@@ -160,6 +160,21 @@ describe("line-ending pending picker ownership", () => {
     expect(other.setLineEnding).not.toHaveBeenCalled();
   });
 
+  it("keeps a reopened selector's current marker when an older conversion settles", async () => {
+    const conversion = deferred();
+    editor.setLineEnding = () => conversion.promise;
+    await selector.show(editor, new Set(["\n"]));
+    const pending = selector.useLineEnding({ name: "CRLF", value: "\r\n" }, { keepOpen: true });
+    selector.lineEndingListHost.cancel();
+    await selector.show(editor, new Set(["\n"]));
+    conversion.resolve();
+    await pending;
+
+    expect(selector.currentName).toBe("LF");
+    expect(selector.lineEndingListHost.isVisible()).toBe(true);
+    expect(selector.editor).toBe(editor);
+  });
+
   it("settles a file lookup after package deactivation without publishing a modal", async () => {
     const endings = deferred();
     editor.getLineEndings = () => endings.promise;

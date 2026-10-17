@@ -38,4 +38,27 @@ describe("Line Ending visible picker editor ownership", () => {
       other.destroy();
     }
   });
+
+  it("converts repeatedly without losing the opening file or its active marker", async () => {
+    await model.runAction("select-list:toggle-keep-open");
+    const other = await lumine.workspace.open();
+    try {
+      other.setText("other\n");
+      for (const [name, ending] of [
+        ["CRLF", "\r\n"],
+        ["LF", "\n"],
+      ]) {
+        await model.selectItemById(name);
+        await model.confirmSelection();
+        expect(editor.getText()).toBe(`first${ending}second${ending}`);
+        expect(other.getText()).toBe("other\n");
+        expect(panel.isVisible()).toBe(true);
+        expect(model.getElement().querySelector("li.active").dataset.lineEnding).toBe(name);
+      }
+      editor.destroy();
+      expect(panel.isVisible()).toBe(false);
+    } finally {
+      other.destroy();
+    }
+  });
 });
