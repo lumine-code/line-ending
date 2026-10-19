@@ -31,8 +31,8 @@
             {
               "label": "Line Ending…",
               "command": "line-ending:show",
-              "group": "line-endings",
-              "order": 10
+              "group": "format",
+              "order": 20
             }
           ]
         }
