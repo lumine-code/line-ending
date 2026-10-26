@@ -46,6 +46,67 @@ describe("line ending selector", () => {
     expect(tile.destroy).toHaveBeenCalled();
   });
 
+  it("updates the tile from metadata without reading atomic change strings", async () => {
+    const editor = await lumine.workspace.open();
+    const buffer = editor.getBuffer();
+    editor.setText("first\nsecond");
+    await conditionPromise(() => lineEndingTile.element.textContent === "LF");
+    const change = {};
+    for (const key of ["oldText", "newText"])
+      Object.defineProperty(change, key, {
+        get() {
+          throw new Error("Document-sized string read");
+        },
+      });
+    spyOn(buffer, "getLineEndings").and.returnValue(["\r\n"]);
+    expect(() => buffer.emitter.emit("did-change-text", change)).not.toThrow();
+    await conditionPromise(() => lineEndingTile.element.textContent === "CRLF");
+  });
+
+  it("converts large snapshots atomically and preserves undo without a whole-text read", async () => {
+    const editor = await lumine.workspace.open();
+    const buffer = editor.getBuffer();
+    const text = "abc\r\ndef\nghi\rjkl\n".repeat(70000);
+    buffer.setText(text);
+    const original = buffer.getTextSnapshot();
+    spyOn(buffer, "getText").and.throwError("Whole-document read");
+    const main = lumine.packages.getActivePackage("line-ending").mainModule;
+    await main.setLineEnding(editor, "\r\n");
+    expect(buffer.getLineEndings()).toEqual(new Set(["\r\n"]));
+    expect(buffer.getTextSnapshot().slice(0, 20)).toBe("abc\r\ndef\r\nghi\rjkl\r\na");
+    editor.undo();
+    expect(buffer.getTextSnapshot().equals(original)).toBe(true);
+  });
+
+  it("keeps an already uniform document unchanged when selecting its ending", async () => {
+    const editor = await lumine.workspace.open();
+    const buffer = editor.getBuffer();
+    editor.setText("line\n".repeat(220000));
+    const original = buffer.getTextSnapshot();
+    spyOn(buffer, "replaceAllMatches").and.throwError("Unnecessary document scan");
+    spyOn(buffer, "getText").and.throwError("Whole-document read");
+    await lumine.packages.getActivePackage("line-ending").mainModule.setLineEnding(editor, "\n");
+    expect(buffer.getPreferredLineEnding()).toBe("\n");
+    expect(buffer.getTextSnapshot().equals(original)).toBe(true);
+  });
+
+  it("records the chosen ending when an atomic edit commits before a listener fails", async () => {
+    const editor = await lumine.workspace.open();
+    const buffer = editor.getBuffer();
+    editor.setText("line\n".repeat(220000));
+    const failure = Object.assign(new Error("Listener failed"), { committed: true });
+    spyOn(buffer, "replaceAllMatches").and.returnValue(Promise.reject(failure));
+    spyOn(lumine.notifications, "addError");
+    await expectAsync(
+      lumine.packages.getActivePackage("line-ending").mainModule.setLineEnding(editor, "\r\n"),
+    ).toBeRejectedWith(failure);
+    expect(buffer.getPreferredLineEnding()).toBe("\r\n");
+    expect(lumine.notifications.addError).toHaveBeenCalledWith(
+      "Line endings changed, but a change listener failed",
+      { detail: "Listener failed", dismissable: true },
+    );
+  });
+
   describe("Commands", () => {
     let editor, editorElement;
 
