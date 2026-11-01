@@ -78,6 +78,40 @@ describe("line ending selector", () => {
     expect(buffer.getTextSnapshot().equals(original)).toBe(true);
   });
 
+  it("converts a large document with custom range tracking and retains cursor and undo", async () => {
+    const editor = await lumine.workspace.open();
+    const buffer = editor.getBuffer();
+    const prefix = "x".repeat(1024 * 1024 + 1) + "\n";
+    buffer.setText(prefix + "abc\r\ndef\nghi\rjkl\n");
+    editor.setCursorBufferPosition([2, 2]);
+    buffer.clearUndoStack();
+    const original = buffer.getTextSnapshot();
+    const tracked = [];
+    const layer = buffer.addMarkerLayer({
+      destroyInvalidatedMarkers: true,
+      trackRanges(entries) {
+        tracked.push(buffer.getTextSnapshot().slice(prefix.length));
+        return entries.map(({ id }) => ({ id, range: null }));
+      },
+    });
+    layer.markRange(
+      [
+        [2, 0],
+        [3, 0],
+      ],
+      { invalidate: "never" },
+    );
+    spyOn(buffer, "getText").and.throwError("Whole-document read");
+    const main = lumine.packages.getActivePackage("line-ending").mainModule;
+    await main.setLineEnding(editor, "\r\n");
+    expect(buffer.getLineEndings()).toEqual(new Set(["\r\n"]));
+    expect(buffer.getTextSnapshot().slice(prefix.length + 1)).toBe("abc\r\ndef\r\nghi\rjkl\r\n");
+    expect(tracked).toEqual(["\nabc\r\ndef\r\nghi\rjkl\n"]);
+    expect(editor.getCursorBufferPosition()).toEqual([2, 2]);
+    editor.undo();
+    expect(buffer.getTextSnapshot().equals(original)).toBe(true);
+  });
+
   it("keeps an already uniform document unchanged when selecting its ending", async () => {
     const editor = await lumine.workspace.open();
     const buffer = editor.getBuffer();
